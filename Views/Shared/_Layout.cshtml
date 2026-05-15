@@ -1,0 +1,60 @@
+@inject VideoSite.Services.VideoCatalog Catalog
+@{
+    var layoutCategories = Catalog.GetCategories();
+}
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - HDFilmAvlu</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-left">
+            <a class="brand brand-logo" asp-controller="Home" asp-action="Index" aria-label="HDFilmAvlu ana sayfa">
+                <img src="~/images/hdfilmavlu-logo-cropped.png" alt="HDFilmAvlu" />
+            </a>
+            <details class="category-menu">
+                <summary>Kategoriler</summary>
+                <div class="category-menu-panel">
+                    <a asp-controller="Home" asp-action="Index">Tümü</a>
+                    @foreach (var category in layoutCategories)
+                    {
+                        <a asp-controller="Home" asp-action="Index" asp-route-category="@category.Slug">@category.Name</a>
+                    }
+                </div>
+            </details>
+        </div>
+        <nav class="nav">
+            <a asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+            <a asp-controller="Home" asp-action="Movies">Filmler</a>
+            <a asp-controller="Home" asp-action="Series">Diziler</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="featured">Keşfet</a>
+        </nav>
+        <div class="topbar-tools">
+            <form class="search-box" method="get" action="@Context.Request.Path">
+                <input name="q" type="search" aria-label="Film ara" placeholder="Ara..." />
+            </form>
+            <a class="icon-button" asp-controller="Admin" asp-action="Index" title="Admin">+</a>
+            <span class="avatar" aria-hidden="true"></span>
+        </div>
+    </header>
+
+    <div class="page-shell">
+        <aside class="ad ad-left">
+            <span>Sol reklam alanı</span>
+        </aside>
+
+        <main class="content">
+            @RenderBody()
+        </main>
+
+        <aside class="ad ad-right">
+            <span>Sağ reklam alanı</span>
+        </aside>
+    </div>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

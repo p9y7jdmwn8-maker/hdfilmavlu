@@ -1,0 +1,24 @@
+@model IReadOnlyList<Category>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Kategoriler";
+}
+
+<section class="form-panel">
+    <div>
+        <p class="eyebrow">Yönetim</p>
+        <h1>Kategoriler</h1>
+    </div>
+
+    <form class="inline-form" asp-action="Categories" method="post">
+        <input name="name" placeholder="Yeni kategori adı" required maxlength="60" />
+        <button class="primary-action" type="submit">Ekle</button>
+    </form>
+
+    <div class="category-list">
+        @foreach (var category in Model)
+        {
+            <span>@category.Name</span>
+        }
+    </div>
+</section>

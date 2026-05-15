@@ -1,0 +1,174 @@
+@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "Ana Sayfa";
+    var heroVideos = Model.Videos.Take(4).ToList();
+    var popularVideos = Model.Videos.Where(video => video.ContentType == "movie").Take(6).ToList();
+    var seriesVideos = Model.Videos.Where(video => video.ContentType == "series").Take(6).ToList();
+    var topVideo = Model.Videos.FirstOrDefault();
+    var sortLinks = new[]
+    {
+        new { Key = "rating-desc", Label = "IMDb yüksek" },
+        new { Key = "rating-asc", Label = "IMDb düşük" },
+        new { Key = "year-desc", Label = "Yeni yıl" },
+        new { Key = "year-asc", Label = "Eski yıl" },
+        new { Key = "duration-desc", Label = "Süre uzun" },
+        new { Key = "duration-asc", Label = "Süre kısa" },
+        new { Key = "title-asc", Label = "A-Z" },
+        new { Key = "title-desc", Label = "Z-A" }
+    };
+    var firstHero = heroVideos.FirstOrDefault();
+}
+
+<section id="featured" class="filmio-hero">
+    <div class="brand-watermark" aria-hidden="true">
+        <img src="~/images/hdfilmavlu-logo-cropped.png" alt="" />
+    </div>
+    <div class="hero-copy">
+        <span class="hero-tag" data-hero-tag>@(firstHero is null ? "YENİ FİLM" : $"{firstHero.Year} · IMDb {firstHero.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}")</span>
+        <h1 data-hero-title>@(firstHero?.Title ?? "THE BATMAN")</h1>
+        <p data-hero-description>@(firstHero?.Description ?? "Gotham şehrinin karanlığında, adaletin peşindeki bir gölge.")</p>
+        <div class="hero-actions">
+            <a class="primary-action red-action" href="#popular">▶ ŞİMDİ İZLE</a>
+            <a class="secondary-action glass-action" href="#popular">+ LİSTEYE EKLE</a>
+        </div>
+    </div>
+    <div class="hero-dots" aria-label="Öne çıkan slayt seçimi">
+        @for (var i = 0; i < heroVideos.Count; i++)
+        {
+            var video = heroVideos[i];
+            <button class="@(i == 0 ? "active" : "")" type="button" data-hero-slide="@i" data-title="@video.Title" data-description="@video.Description" data-tag="@($"{video.Year} · IMDb {video.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}")" aria-label="@($"{i + 1}. öne çıkan: {video.Title}")"></button>
+        }
+    </div>
+</section>
+
+<div class="home-layout">
+    <div class="movie-rows">
+        <section id="popular" class="movie-section">
+            <div class="row-heading">
+                <h2>Popüler Filmler</h2>
+                <div class="row-arrows" aria-label="Popüler filmler kaydırma">
+                    <button type="button" class="carousel-arrow" data-direction="-1" aria-label="Popüler filmleri sola kaydır">‹</button>
+                    <button type="button" class="carousel-arrow" data-direction="1" aria-label="Popüler filmleri sağa kaydır">›</button>
+                </div>
+            </div>
+
+            <div class="movie-row">
+                @foreach (var video in popularVideos)
+                {
+                    var categoryName = Model.Categories.FirstOrDefault(category => category.Slug == video.CategorySlug)?.Name ?? "Film";
+                    var rating = video.ImdbRating > 0 ? video.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) : "-";
+                    <a class="movie-poster-card" asp-action="Watch" asp-route-id="@video.Id">
+                        <div class="movie-poster poster-tone-@((popularVideos.IndexOf(video) % 6) + 1)">
+                            <span class="poster-title">@video.Title</span>
+                            <span class="rating">★ @rating</span>
+                        </div>
+                        <strong>@video.Title</strong>
+                        <small>@video.Year · @categoryName</small>
+                    </a>
+                }
+            </div>
+        </section>
+
+        <section id="series" class="movie-section">
+            <div class="row-heading">
+                <h2>Trend Olan Diziler</h2>
+                <div class="row-arrows" aria-label="Trend diziler kaydırma">
+                    <button type="button" class="carousel-arrow" data-direction="-1" aria-label="Trend dizileri sola kaydır">‹</button>
+                    <button type="button" class="carousel-arrow" data-direction="1" aria-label="Trend dizileri sağa kaydır">›</button>
+                </div>
+            </div>
+
+            <div class="movie-row">
+                @foreach (var video in seriesVideos)
+                {
+                    var categoryName = Model.Categories.FirstOrDefault(category => category.Slug == video.CategorySlug)?.Name ?? "Dizi";
+                    var rating = video.ImdbRating > 0 ? video.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) : "-";
+                    <a class="movie-poster-card" asp-action="Watch" asp-route-id="@video.Id">
+                        <div class="movie-poster poster-tone-@(((seriesVideos.IndexOf(video) + 2) % 6) + 1)">
+                            <span class="poster-title">@video.Title</span>
+                            <span class="rating">★ @rating</span>
+                        </div>
+                        <strong>@video.Title</strong>
+                        <small>@video.Year · @categoryName</small>
+                    </a>
+                }
+            </div>
+        </section>
+
+        <section class="category-strip compact" aria-label="Kategoriler">
+            <a class="category-pill @(Model.ActiveCategorySlug is null ? "active" : "")" asp-action="Index" asp-route-sort="@Model.Sort" asp-route-q="@Model.Query">Tümü</a>
+            @foreach (var category in Model.Categories)
+            {
+                <a class="category-pill @(Model.ActiveCategorySlug == category.Slug ? "active" : "")" asp-action="Index" asp-route-category="@category.Slug" asp-route-sort="@Model.Sort" asp-route-q="@Model.Query">@category.Name</a>
+            }
+        </section>
+
+        <section class="sort-panel" aria-label="Film sıralaması">
+            <div>
+                <span>Sıralama</span>
+                <strong>Film Sıralaması</strong>
+            </div>
+            <div class="sort-chip-list">
+                @foreach (var sortLink in sortLinks)
+                {
+                    <a class="sort-chip @(Model.Sort == sortLink.Key ? "active" : "")" asp-action="Index" asp-route-category="@Model.ActiveCategorySlug" asp-route-sort="@sortLink.Key" asp-route-q="@Model.Query">@sortLink.Label</a>
+                }
+            </div>
+        </section>
+    </div>
+
+    <aside class="filmio-side">
+        <div class="side-card compact-preview">
+            <span class="side-kicker">Öne çıkan</span>
+            <h3>@(topVideo?.Title ?? "Inception")</h3>
+            <p>@(topVideo?.Year ?? 2025) · @(topVideo?.DurationMinutes ?? 60) dk · IMDb @(topVideo?.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) ?? "8.8")</p>
+            <div class="mini-media">
+                <span>▶</span>
+            </div>
+            <p>HDFilmAvlu arşivindeki öne çıkan film için sinematik bir önizleme.</p>
+        </div>
+
+        <div class="side-card score-card">
+            <span>Kullanıcı Puanı</span>
+            <strong>@(topVideo?.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) ?? "8.8")</strong>
+            <div class="stars">★★★★★</div>
+            <small>(2.1B oy)</small>
+        </div>
+
+        <div class="side-card genre-card">
+            <span>Tür</span>
+            <div>
+                <a asp-action="Index" asp-route-category="aksiyon" asp-route-sort="@Model.Sort" asp-route-q="@Model.Query">Aksiyon</a>
+                <a asp-action="Index" asp-route-category="dram" asp-route-sort="@Model.Sort" asp-route-q="@Model.Query">Dram</a>
+                <a asp-action="Index" asp-route-category="belgesel" asp-route-sort="@Model.Sort" asp-route-q="@Model.Query">Belgesel</a>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<section id="videos" class="archive-section">
+    <div class="row-heading">
+        <h2>Tüm Videolar</h2>
+    </div>
+
+    <div class="video-grid filmio-grid">
+        @foreach (var video in Model.Videos)
+        {
+            var categoryName = Model.Categories.FirstOrDefault(category => category.Slug == video.CategorySlug)?.Name ?? "Video";
+            var rating = video.ImdbRating > 0 ? video.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) : "-";
+            <a class="video-card" asp-action="Watch" asp-route-id="@video.Id">
+                <div class="poster demo-poster">
+                    <span class="demo-label">@categoryName</span>
+                    <strong>@video.Title</strong>
+                </div>
+                <div class="video-card-body">
+                    <div>
+                        <strong>@video.Title</strong>
+                        <small>@video.Year · IMDb @rating</small>
+                    </div>
+                    <span>@video.DurationMinutes dk</span>
+                </div>
+            </a>
+        }
+    </div>
+</section>

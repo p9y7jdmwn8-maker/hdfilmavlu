@@ -1,0 +1,58 @@
+@model VideoItem
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<article class="watch-page film-detail">
+    <section class="detail-hero">
+        <div>
+            <span class="hero-tag">@Model.Year · IMDb @Model.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)</span>
+            <h1>@Model.Title</h1>
+            <p>@Model.Description</p>
+            <div class="hero-actions">
+                <button class="primary-action red-action favorite-button" type="button" data-favorite="@Model.Id">+ LİSTEYE EKLE</button>
+                <a class="secondary-action glass-action" asp-action="Index" asp-route-category="@Model.CategorySlug">Kategoriye Dön</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="detail-layout">
+        <section>
+            @if (string.IsNullOrWhiteSpace(Model.FileName))
+            {
+                <div class="player demo-player">
+                    <span>Taslak video önizlemesi</span>
+                </div>
+            }
+            else
+            {
+                <video class="player" controls preload="metadata" poster="@(string.IsNullOrWhiteSpace(Model.PosterFileName) ? "" : Url.Content($"~/uploads/posters/{Model.PosterFileName}"))">
+                    <source src="~/uploads/videos/@Model.FileName" />
+                    Tarayıcınız video oynatmayı desteklemiyor.
+                </video>
+            }
+
+            <div class="content-ad">
+                Reklam alanı · Video altı yatay banner
+            </div>
+        </section>
+
+        <aside class="side-card detail-stats">
+            <span>Film Bilgileri</span>
+            <dl>
+                <div>
+                    <dt>Yıl</dt>
+                    <dd>@Model.Year</dd>
+                </div>
+                <div>
+                    <dt>IMDb</dt>
+                    <dd>@Model.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)</dd>
+                </div>
+                <div>
+                    <dt>Süre</dt>
+                    <dd>@Model.DurationMinutes dk</dd>
+                </div>
+            </dl>
+        </aside>
+    </div>
+</article>

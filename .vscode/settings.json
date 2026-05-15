@@ -1,0 +1,6 @@
+{
+  "terminal.integrated.env.windows": {
+    "DOTNET_ROOT": "${workspaceFolder}\\.dotnet",
+    "PATH": "${workspaceFolder}\\.dotnet;${env:PATH}"
+  }
+}

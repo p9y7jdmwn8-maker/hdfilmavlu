@@ -1,0 +1,10 @@
+bin/
+obj/
+.dotnet/
+App_Data/
+wwwroot/uploads/
+dotnet-install.ps1
+logs/
+deploy-output/
+publish/
+*.zip

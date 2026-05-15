@@ -1,0 +1,33 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Panel";
+}
+
+<section class="admin-hero">
+    <div>
+        <p class="eyebrow">Yönetim paneli</p>
+        <h1>Video yükleme ve kategori düzenleme alanı.</h1>
+    </div>
+    <a class="primary-action" asp-action="Upload">Yeni Video</a>
+</section>
+
+<section class="admin-metrics">
+    <div>
+        <span>Videolar</span>
+        <strong>@ViewBag.Videos</strong>
+    </div>
+    <div>
+        <span>Kategoriler</span>
+        <strong>@ViewBag.Categories</strong>
+    </div>
+    <div>
+        <span>Reklam alanları</span>
+        <strong>2</strong>
+    </div>
+</section>
+
+<section class="admin-actions">
+    <a asp-action="Upload">Video yükleme ekranı</a>
+    <a asp-action="Categories">Kategori yönetimi</a>
+    <a asp-controller="Home" asp-action="Index">Kullanıcı sitesini aç</a>
+</section>

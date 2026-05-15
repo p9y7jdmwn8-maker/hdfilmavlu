@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - HDFilmAvlu Admin</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <header class="topbar admin-topbar">
+        <a class="brand" asp-controller="Admin" asp-action="Index">HDFilmAvlu Admin</a>
+        <nav class="nav">
+            <a asp-controller="Admin" asp-action="Index">Panel</a>
+            <a asp-controller="Admin" asp-action="Upload">Video Yükle</a>
+            <a asp-controller="Admin" asp-action="Categories">Kategoriler</a>
+            <a asp-controller="Home" asp-action="Index">Siteyi Gör</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <form class="logout-form" asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit">Çıkış</button>
+                </form>
+            }
+        </nav>
+    </header>
+
+    <main class="admin-shell">
+        @RenderBody()
+    </main>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

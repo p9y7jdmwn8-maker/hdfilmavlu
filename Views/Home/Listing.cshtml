@@ -1,0 +1,82 @@
+@model HomeIndexViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    var sortLinks = new[]
+    {
+        new { Key = "rating-desc", Label = "IMDb yüksek" },
+        new { Key = "rating-asc", Label = "IMDb düşük" },
+        new { Key = "year-desc", Label = "Yeni yıl" },
+        new { Key = "year-asc", Label = "Eski yıl" },
+        new { Key = "duration-desc", Label = "Süre uzun" },
+        new { Key = "duration-asc", Label = "Süre kısa" },
+        new { Key = "title-asc", Label = "A-Z" },
+        new { Key = "title-desc", Label = "Z-A" }
+    };
+    var targetAction = Model.ContentType == "series" ? "Series" : "Movies";
+}
+
+<section class="listing-hero">
+    <span class="hero-tag">HDFilmAvlu</span>
+    <h1>@Model.PageTitle</h1>
+    <p>@Model.PageDescription</p>
+</section>
+
+<section class="listing-controls">
+    <div class="category-strip compact" aria-label="@Model.PageTitle kategorileri">
+        <a class="category-pill @(Model.ActiveCategorySlug is null ? "active" : "")" asp-action="@targetAction" asp-route-sort="@Model.Sort" asp-route-q="@Model.Query">Tümü</a>
+        @foreach (var category in Model.Categories)
+        {
+            <a class="category-pill @(Model.ActiveCategorySlug == category.Slug ? "active" : "")" asp-action="@targetAction" asp-route-category="@category.Slug" asp-route-sort="@Model.Sort" asp-route-q="@Model.Query">@category.Name</a>
+        }
+    </div>
+
+    <section class="sort-panel" aria-label="@Model.PageTitle sıralaması">
+        <div>
+            <span>Sıralama</span>
+            <strong>@Model.PageTitle Sıralaması</strong>
+        </div>
+        <div class="sort-chip-list">
+            @foreach (var sortLink in sortLinks)
+            {
+                <a class="sort-chip @(Model.Sort == sortLink.Key ? "active" : "")" asp-action="@targetAction" asp-route-category="@Model.ActiveCategorySlug" asp-route-sort="@sortLink.Key" asp-route-q="@Model.Query">@sortLink.Label</a>
+            }
+        </div>
+    </section>
+</section>
+
+<section class="archive-section listing-results">
+    <div class="row-heading">
+        <h2>@Model.Videos.Count içerik</h2>
+    </div>
+
+    @if (Model.Videos.Count == 0)
+    {
+        <div class="empty-state">
+            <h2>Sonuç bulunamadı</h2>
+            <p>Arama, kategori veya sıralama seçimini değiştirerek tekrar deneyin.</p>
+        </div>
+    }
+    else
+    {
+        <div class="video-grid filmio-grid">
+            @foreach (var video in Model.Videos)
+            {
+                var categoryName = Model.Categories.FirstOrDefault(category => category.Slug == video.CategorySlug)?.Name ?? "Video";
+                var rating = video.ImdbRating > 0 ? video.ImdbRating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) : "-";
+                <a class="video-card" asp-action="Watch" asp-route-id="@video.Id">
+                    <div class="poster demo-poster">
+                        <span class="demo-label">@categoryName</span>
+                        <strong>@video.Title</strong>
+                    </div>
+                    <div class="video-card-body">
+                        <div>
+                            <strong>@video.Title</strong>
+                            <small>@video.Year · IMDb @rating</small>
+                        </div>
+                        <span>@video.DurationMinutes dk</span>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</section>

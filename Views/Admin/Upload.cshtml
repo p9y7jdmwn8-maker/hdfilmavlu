@@ -1,0 +1,81 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Video Yükle";
+    var categories = (IReadOnlyList<Category>)ViewBag.Categories;
+}
+
+<section class="form-panel">
+    <div>
+        <p class="eyebrow">Yönetim</p>
+        <h1>Yeni video yükle</h1>
+    </div>
+
+    <form class="stack-form" asp-action="Upload" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <label>
+            Başlık
+            <input name="title" required maxlength="120" />
+        </label>
+
+        <label>
+            Açıklama
+            <textarea name="description" rows="4"></textarea>
+        </label>
+
+        <div class="form-grid">
+            <label>
+                İçerik türü
+                <select name="contentType" required>
+                    <option value="movie">Film</option>
+                    <option value="series">Dizi</option>
+                </select>
+            </label>
+
+            <label>
+                Kategori
+                <select name="categorySlug" required>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Slug">@category.Name</option>
+                    }
+                </select>
+            </label>
+        </div>
+
+        <div class="form-grid">
+            <label>
+                Süre
+                <select name="durationMinutes">
+                    <option value="30">30 dakika</option>
+                    <option value="45">45 dakika</option>
+                    <option value="60">1 saat</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="form-grid">
+            <label>
+                Yıl
+                <input name="year" type="number" min="1900" max="2100" value="@DateTime.Now.Year" required />
+            </label>
+
+            <label>
+                IMDb puanı
+                <input name="imdbRating" type="number" min="0" max="10" step="0.1" value="8.0" required />
+            </label>
+        </div>
+
+        <label>
+            Video dosyası
+            <input name="videoFile" type="file" accept="video/*" required />
+        </label>
+
+        <label>
+            Kapak görseli
+            <input name="posterFile" type="file" accept="image/*" />
+        </label>
+
+        <button class="primary-action" type="submit">Yükle</button>
+    </form>
+</section>

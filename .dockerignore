@@ -1,0 +1,11 @@
+.dotnet/
+.vscode/
+bin/
+obj/
+logs/
+publish/
+deploy-output/
+App_Data/
+wwwroot/uploads/
+*.zip
+dotnet-install.ps1

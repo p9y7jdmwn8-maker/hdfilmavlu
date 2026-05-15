@@ -1,0 +1,34 @@
+@model LoginViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Admin Giriş";
+}
+
+<section class="form-panel login-panel">
+    <div>
+        <p class="eyebrow">HDFilmAvlu</p>
+        <h1>Admin girişi</h1>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <p class="form-error">@Model.ErrorMessage</p>
+    }
+
+    <form class="stack-form" asp-action="Login" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <label>
+            Kullanıcı adı
+            <input asp-for="Username" autocomplete="username" required />
+        </label>
+
+        <label>
+            Şifre
+            <input asp-for="Password" type="password" autocomplete="current-password" required />
+        </label>
+
+        <button class="primary-action" type="submit">Giriş Yap</button>
+    </form>
+</section>
