@@ -1,43 +1,77 @@
-# StreamPanel Video Sitesi
+# HDFilmAvlu
 
-C# / ASP.NET Core MVC ile hazırlanmış modern video sitesi başlangıç projesi.
+C# / ASP.NET Core MVC ile hazirlanmis modern video ve film izleme sitesi.
 
-## Özellikler
+## Ozellikler
 
 - Ana sayfa
+- Film ve dizi listeleme sayfalari
 - Kategori filtreleri
-- Sağ ve sol reklam alanları
-- Video detay/izleme sayfası
-- Yönetimden kategori ekleme
-- Yönetimden video ve kapak görseli yükleme
-- 30, 45 ve 60 dakika süre seçenekleri
+- Yil, IMDb puani ve sureye gore siralama
+- Sag ve sol reklam alanlari
+- Otomatik kayan one cikan video alani
+- Video detay/izleme sayfasi
+- Admin girisi
+- Admin panelinden kategori ekleme
+- Admin panelinden video ve kapak gorseli yukleme
+- 30, 45 ve 60 dakika video sureleri icin alanlar
 
-## Çalıştırma
+## Calistirma
 
-Bu klasörde yerel .NET 8 SDK kuruludur. VS Code ile klasörü açtıktan sonra terminalde şu komutları kullanabilirsiniz:
+Bu klasorde yerel .NET 8 SDK kuruludur. VS Code ile klasoru actiktan sonra terminalde:
 
 ```powershell
 .\.dotnet\dotnet.exe restore
 .\.dotnet\dotnet.exe run
 ```
 
-VS Code terminali yeniden açıldığında `.vscode/settings.json` sayesinde `dotnet run` komutu da çalışır.
+VS Code terminali yeniden acildiginda `.vscode/settings.json` sayesinde `dotnet run` komutu da calisir.
 
-Tarayıcıda terminalde yazan `http://localhost:....` adresini açın.
+Tarayicida terminalde yazan `http://localhost:...` adresini acin.
 
-## Yayınlama
+## Admin
 
-Yayın paketi oluşturmak için:
+Varsayilan yerel giris:
 
-```powershell
-.\scripts\publish.ps1
+```text
+Kullanici adi: admin
+Sifre: admin123
 ```
 
-Ayrıntılar için `DEPLOYMENT.md` dosyasına bakın.
+Canli yayinda bu bilgileri Render environment variables ile degistirin:
 
-## Düzenlenecek Yerler
+```text
+Admin__Username
+Admin__Password
+```
 
-- Kategori eklemek için sitede `Kategoriler` sayfasını kullanın.
-- Reklam HTML kodlarını `Views/Shared/_Layout.cshtml` dosyasındaki `Sol reklam alanı` ve `Sağ reklam alanı` bölümlerine yerleştirin.
-- Yüklenen videolar `wwwroot/uploads/videos` klasörüne kaydedilir.
-- Yüklenen kapaklar `wwwroot/uploads/posters` klasörüne kaydedilir.
+## Render Yayini
+
+Render uzerinde Docker Web Service olarak yayinlanir.
+
+Temel ayarlar:
+
+```text
+Runtime: Docker
+Dockerfile Path: ./Dockerfile
+Branch: main
+```
+
+Environment variables:
+
+```text
+Admin__Username=admin
+Admin__Password=guclu-bir-sifre
+DISABLE_HTTPS_REDIRECT=true
+ASPNETCORE_ENVIRONMENT=Production
+```
+
+Ayrintilar icin `DEPLOYMENT.md` dosyasina bakin.
+
+## Duzenlenecek Yerler
+
+- Kategori eklemek icin admin panelini kullanin.
+- Reklam HTML kodlari `Views/Shared/_Layout.cshtml` dosyasindaki sol ve sag reklam alanlarina eklenir.
+- Yuklenen videolar `wwwroot/uploads/videos` klasorune kaydedilir.
+- Yuklenen kapaklar `wwwroot/uploads/posters` klasorune kaydedilir.
+
