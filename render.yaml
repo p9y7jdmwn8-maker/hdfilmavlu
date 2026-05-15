@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: hdfilmavlu
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeployTrigger: commit
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: DISABLE_HTTPS_REDIRECT
+        value: "true"
+      - key: Admin__Username
+        value: admin
+      - key: Admin__Password
+        sync: false
